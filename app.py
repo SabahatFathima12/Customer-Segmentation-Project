@@ -4,17 +4,15 @@ import plotly.express as px
 from sklearn.cluster import KMeans
 import matplotlib.pyplot as plt
 
-# -----------------------------
 # Page Config
-# -----------------------------
+
 st.set_page_config(
     page_title="Customer Segmentation Dashboard",
     layout="wide"
 )
 
-# -----------------------------
 # Load Dataset
-# -----------------------------
+
 @st.cache_data
 def load_data():
     df = pd.read_csv("Mall_Customers.csv")
@@ -22,9 +20,8 @@ def load_data():
 
 df = load_data()
 
-# -----------------------------
 # Title
-# -----------------------------
+
 st.title("🛍️ Customer Segmentation Dashboard")
 
 st.markdown("""
@@ -33,9 +30,8 @@ This dashboard segments customers based on:
 - Spending Score
 """)
 
-# -----------------------------
 # Sidebar
-# -----------------------------
+
 st.sidebar.header("🔍 Filters")
 
 gender_filter = st.sidebar.multiselect(
@@ -46,9 +42,8 @@ gender_filter = st.sidebar.multiselect(
 
 filtered_df = df[df["Gender"].isin(gender_filter)]
 
-# -----------------------------
 # KPI Metrics
-# -----------------------------
+
 total_customers = len(filtered_df)
 avg_income = filtered_df["Annual Income (k$)"].mean()
 avg_spending = filtered_df["Spending Score (1-100)"].mean()
@@ -61,9 +56,8 @@ col3.metric("🛒 Avg Spending Score", f"{avg_spending:.2f}")
 
 st.markdown("---")
 
-# -----------------------------
 # Elbow Method
-# -----------------------------
+
 st.subheader("📈 Elbow Method")
 
 X = filtered_df[["Annual Income (k$)", "Spending Score (1-100)"]]
@@ -85,16 +79,14 @@ fig_elbow = px.line(
 
 st.plotly_chart(fig_elbow, use_container_width=True)
 
-# -----------------------------
 # Apply KMeans Clustering
-# -----------------------------
+
 kmeans = KMeans(n_clusters=5, random_state=42, n_init=10)
 
 filtered_df["Cluster"] = kmeans.fit_predict(X)
 
-# -----------------------------
 # Cluster Visualization
-# -----------------------------
+
 st.subheader("🎯 Customer Segments")
 
 fig_clusters = px.scatter(
@@ -109,9 +101,8 @@ fig_clusters = px.scatter(
 
 st.plotly_chart(fig_clusters, use_container_width=True)
 
-# -----------------------------
 # Cluster Distribution
-# -----------------------------
+
 st.subheader("📊 Cluster Distribution")
 
 cluster_counts = filtered_df["Cluster"].value_counts().reset_index()
@@ -127,16 +118,14 @@ fig_bar = px.bar(
 
 st.plotly_chart(fig_bar, use_container_width=True)
 
-# -----------------------------
 # Dataset View
-# -----------------------------
+
 st.subheader("📋 Customer Data")
 
 st.dataframe(filtered_df, use_container_width=True)
 
-# -----------------------------
 # Insights
-# -----------------------------
+
 st.markdown("---")
 
 st.subheader("📌 Key Insights")
